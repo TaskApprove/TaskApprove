@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskApprove - Coming Soon!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #4a90e2; /* Bright Blue */
+            --secondary-color: #f5a623; /* Orange accent */
+            --tertiary-color: #50e3c2;  /* Teal/Aqua - for gradient */
+            --text-color: #f0f0f0;
+            --bg-color: #282c34; /* Dark background */
+            --card-bg: rgba(58, 63, 74, 0.9); /* Slightly transparent card background */
+            --particle-color: #ffffff; /* Color of particles */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color); /* Fallback background */
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* --- Particle Container --- */
+        #tsparticles {
+            position: fixed; /* Use fixed to cover viewport */
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1; /* Place behind content */
+            background-color: var(--bg-color); /* Set background here */
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--card-bg); /* Make card slightly transparent */
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative; /* Needed for stacking context if any absolute children */
+            z-index: 1; /* Ensure container is above particles */
+        }
+
+        /* --- Logo Animations --- */
+        /* 1. Fade-in and slide-up */
+        @keyframes animateLogo {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 2. Animated Gradient Background */
+        @keyframes animateGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                 background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .logo {
+            font-size: 3em; /* Slightly larger for more impact */
+            font-weight: 700;
+            margin-bottom: 25px; /* Adjusted margin */
+
+            /* Gradient Setup */
+            background-image: linear-gradient(
+                90deg, /* Gradient direction */
+                var(--primary-color),
+                var(--tertiary-color),
+                var(--secondary-color),
+                var(--tertiary-color), /* Repeat colors for smoother loop/sweep */
+                var(--primary-color)
+            );
+            background-size: 300% auto; /* Make gradient wider than the text */
+            background-clip: text;
+            -webkit-background-clip: text; /* Vendor prefix for compatibility */
+            color: transparent; /* Hide original text color to show gradient */
+            -webkit-text-fill-color: transparent; /* Extra measure for Safari */
+
+            /* Apply BOTH animations */
+            opacity: 0; /* Start hidden for fade-in */
+            animation:
+                /* Fade-in/slide-up animation */
+                animateLogo 0.8s 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+                /* Gradient sweep animation */
+                animateGradient 4s 0.8s ease-in-out forwards; /* name duration delay easing iteration/fill */
+                /* Runs gradient animation once after fade-in starts, lasts 4s */
+                /* For infinite loop: replace 'forwards' with 'infinite' for animateGradient */
+
+            /* If using an image logo instead of text: */
+            /* Remove gradient styles above and uncomment below */
+            /*
+            img {
+                 display: inline-block; // Or block depending on layout
+                 max-width: 250px; // Adjust size
+                 margin-bottom: 25px;
+                 opacity: 0;
+                 animation: animateLogo 0.8s 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+             }
+             */
+        }
+
+
+        h1 {
+            font-size: 2.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .subheadline {
+            font-size: 1.1em;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .benefits {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+
+        .benefit-item {
+            flex: 1;
+            min-width: 150px;
+            max-width: 180px;
+            padding: 15px;
+        }
+
+        .benefit-item .icon {
+            font-size: 2.5em; /* Placeholder for icons */
+            margin-bottom: 10px;
+            color: var(--primary-color);
+             /* Use actual icons (FontAwesome, SVG, etc.) here */
+             /* Example: <i class="fas fa-check-circle"></i> */
+             /* Needs icon library like Font Awesome linked in <head> */
+        }
+
+        .benefit-item h3 {
+            font-size: 1em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .cta-section h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: var(--secondary-color); /* Accent color for CTA heading */
+        }
+
+        .email-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .email-form input[type="email"] {
+            padding: 12px 15px;
+            font-size: 1em;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            min-width: 250px;
+            flex-grow: 1; /* Allow input to grow */
+        }
+
+        .email-form button {
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: 600;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .email-form button:hover {
+            background-color: #3a7ac8; /* Darker shade of primary */
+            transform: translateY(-2px);
+        }
+
+        .form-note {
+            font-size: 0.85em;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            opacity: 0.7;
+            position: relative; /* Ensure footer is also above particles */
+            z-index: 1;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Basic Responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                 padding: 30px 20px;
+            }
+            .logo {
+                font-size: 2.5em; /* Adjust logo size for mobile */
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .subheadline {
+                font-size: 1em;
+            }
+            .benefits {
+                flex-direction: column;
+                align-items: center;
+            }
+            .benefit-item {
+                max-width: 300px;
+                 text-align: center;
+            }
+             .email-form {
+                flex-direction: column;
+                width: 90%;
+                margin: 0 auto 10px auto;
+            }
+            .email-form input[type="email"], .email-form button {
+                width: 100%;
+            }
+        }
+    </style>
+    </head>
+<body>
+
+    <div id="tsparticles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">TaskApprove</div>
+
+            <h1>Stop Release Chaos. Start Confident Deployments.</h1>
+            <p class="subheadline">
+                Tired of messy approval chains, missed vetting steps, and poor documentation slowing down your releases? TaskApprove is the upcoming platform designed to bring clarity, control, and confidence to every version you push live.
+            </p>
+        </header>
+
+        <main>
+            <section class="benefits">
+                <div class="benefit-item">
+                    <div class="icon">🚀</div>
+                    <h3>Streamlined Approvals</h3>
+                    <p>Get sign-offs faster with clear workflows.</p>
+                </div>
+                <div class="benefit-item">
+                     <div class="icon">🔍</div>
+                    <h3>Rigorous Vetting</h3>
+                    <p>Ensure requirements are met before production.</p>
+                </div>
+                <div class="benefit-item">
+                     <div class="icon">📚</div>
+                    <h3>Automated Documentation</h3>
+                    <p>Capture history automatically. Stay audit-ready.</p>
+                </div>
+                 <div class="benefit-item">
+                     <div class="icon">✅</div>
+                    <h3>Confident Deployments</h3>
+                    <p>Push to live knowing everything is reviewed.</p>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h2>Be the First to Experience TaskApprove!</h2>
+                <form action="#" method="POST" class="email-form" onsubmit="alert('This is a placeholder form. Please integrate your email service.'); return false;">
+                    <input type="email" name="email" placeholder="Enter your email address" required>
+                    <button type="submit">Get Early Access</button>
+                </form>
+                <p class="form-note">We'll email you when we launch. No spam, ever.</p>
+            </section>
+        </main>
+
+    </div> <footer>
+        &copy; 2025 TaskApprove. All rights reserved. |
+        <a href="#">Privacy Policy</a>
+        </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // tsParticles configuration
+            // Find many options here: https://particles.js.org/docs/interfaces/ts_particles_engine.Options_Interfaces_IOptions.IOptions.html
+             const particlesOptions = {
+                fpsLimit: 60,
+                interactivity: {
+                    events: {
+                        onHover: {
+                            enable: true,
+                            mode: 'repulse',
+                        },
+                        onClick: {
+                            enable: true,
+                            mode: 'push',
+                        },
+                        resize: true,
+                    },
+                    modes: {
+                        repulse: {
+                            distance: 100,
+                            duration: 0.4
+                        },
+                         push: {
+                             particles_nb: 4
+                         },
+                    },
+                },
+                particles: {
+                    color: {
+                        value: getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim() || '#ffffff',
+                    },
+                    links: { // Lines connecting particles
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim() || '#ffffff',
+                        distance: 150,
+                        enable: true,
+                        opacity: 0.3, // Make lines subtle
+                        width: 1,
+                    },
+                    collisions: {
+                         enable: false, // Set to true if particles should bounce off each other
+                    },
+                    move: {
+                        direction: 'none',
+                        enable: true,
+                        outModes: {
+                            default: 'bounce',
+                        },
+                        random: false,
+                        speed: 1.5, // Particle speed
+                        straight: false,
+                    },
+                    number: {
+                        density: {
+                            enable: true,
+                            area: 800, // Higher area = fewer particles
+                        },
+                        value: 60, // Approx max number of particles
+                    },
+                    opacity: {
+                        value: 0.5, // Base opacity of particles
+                    },
+                    shape: {
+                        type: 'circle',
+                    },
+                    size: {
+                        value: { min: 1, max: 3 }, // Random size between 1 and 3
+                    },
+                },
+                detectRetina: true,
+            };
+
+            // Load the particles
+            tsParticles.load('tsparticles', particlesOptions)
+                .then(container => {
+                    // console.log('tsParticles loaded successfully', container); // Uncomment for debugging
+                })
+                .catch(error => {
+                    console.error('Error loading tsParticles:', error);
+                });
+        });
+    </script>
+
+</body>
+</html>
